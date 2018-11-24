@@ -1,5 +1,3 @@
-from time import localtime as time
-
 """AVLTree/Balanced Binary Search Tree Data structure.
 
 Thanks for checking out my implementation of a BBST. Feel free to use it and/or change it to better suit your needs.
@@ -301,8 +299,6 @@ class Node(object):
             self._left_rotate(z)
 
         else:
-            with open('log.txt', 'a') as file:
-                file.write(f'{time}, Tree corrupted.\n{x}, {y}, {z}')
             raise Exception('Tree corrupted')
 
     def _right_rotate(self, z):

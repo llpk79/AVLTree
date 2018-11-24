@@ -4,7 +4,6 @@ from timeit import default_timer as timer
 from time import localtime as time
 
 
-
 def child_height_diff(node):
     if not node.left:
         left = 0
@@ -161,9 +160,6 @@ print(is_avl_tree(tree.root))
 print(len(tree))
 print(tree)
 
-
-
-
 # Create tree for which insertion creates imbalance needing left rotation.
 left = [3, 2]
 for node in left:
@@ -176,14 +172,12 @@ print(tree)
 
 
 # Clear the tree.
-
 tree.clear_tree()
 print(is_avl_tree(tree.root))
 print(tree)
 
 
 # Create tree for which insertion creates imbalance needing left then right rotations.
-
 # Here the insertion is the right child of the root's predecessor.
 
 left_right = [20, 4, 26, 3, 9, 21, 30, 2, 7, 11]
@@ -191,6 +185,7 @@ for node in left_right:
     tree.insert(node)
 print(is_avl_tree(tree.root))
 print(tree)
+
 # Insert value to cause imbalance.
 tree.insert(15)
 print(is_avl_tree(tree.root))
@@ -236,7 +231,6 @@ print(tree)
 
 # Inserting increasing values.
 print('insert increasing')
-
 tree.clear_tree()
 for node in list(range(1000)):
     tree.insert(node)
@@ -246,7 +240,6 @@ print(tree.size)
 
 # Insert decreasing values.
 print('insert decreasing')
-
 tree.clear_tree()
 for node in list(range(1000, 0, -1)):
     tree.insert(node)
@@ -257,7 +250,6 @@ print(tree.size)
 
 # Insert random values.
 print('insert random')
-
 for node in range(10000):
     tree.insert(randint(-50000, 50000))
 print(is_avl_tree(tree.root))
@@ -266,7 +258,6 @@ len_tree = len(tree)
 
 # Delete some nodes.
 print('delete some nodes.')
-
 for node in range(2, 1000, 2):
     tree.delete(node)
 print(is_avl_tree(tree.root))
@@ -275,7 +266,6 @@ print(len_tree - 499 == len(tree))
 
 # Searching tree.
 print('searching')
-
 tree.clear_tree()
 for node in list(range(15)):
     tree.insert(node)
@@ -287,7 +277,6 @@ tree.search(22, print_result=True)
 
 
 # Tree height.
-
 print(tree.height())
 tree.height(print_result=True)
 
