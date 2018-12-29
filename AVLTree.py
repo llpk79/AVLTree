@@ -1,38 +1,11 @@
+from typing import TypeVar, Any
+Q = TypeVar('Q', str, int, float)
+
 """AVLTree/Balanced Binary Search Tree Data structure.
 
 Thanks for checking out my implementation of a BBST. Feel free to use it and/or change it to better suit your needs.
 Any feedback is greatly appreciated.
 
-Tree designed for data types supporting <, =, >.
-
-The following methods are implemented:
-
-    Create a new tree:
-        tree = AVLTree()
-
-    View tree structure (may need some adjustment for screen size):
-        print(tree)
-
-    Determine height of tree:
-        tree.height(print_result=True)
-        Returns int
-        print_result is optional, defaults to False
-
-    Insert data into tree:
-        tree.insert(data)
-        If data already exists in tree, user is alerted
-
-    Search for data in tree:
-        tree.search(data, print_results=True)
-        returns Boolean
-        print_results is optional, defaults to False
-
-    Delete data from tree:
-        tree.delete(data)
-        If data does not exist in tree, user is alerted
-
-    Clear all data from tree:
-        tree.clear_tree()
 """
 
 
@@ -45,15 +18,17 @@ class Node(object):
 
     """
 
-    def __init__(self, data):
+    def __init__(self, data: Q)-> None:
         """Instantiates Node object for AVLTree.
 
         Data assumed to be compatible with <, =, > operators.
+
         Parent, left and right are pointers to parent and child nodes.
+
         Tallness initialized at 1, adjusted with insert and delete to represent height of node. Null nodes have
         height of 0.
 
-        :param data: Values compatible with <, =, > operators.
+        :param data: int, float,str
         """
         self.data = data
         self.parent = None
@@ -61,7 +36,9 @@ class Node(object):
         self.right = None
         self.tallness = 1
 
-    def __repr__(self):
+    def __repr__(self)-> str:
+        """Prints text representation of tree
+        """
         if not self:
             return 'Tree is empty. Please insert data.'
         the_tree = '\n'
@@ -100,7 +77,7 @@ class Node(object):
             nodes = next_nodes
         return the_tree
 
-    def print_tree(self, cur_node, order=None):
+    def print_tree(self, cur_node: 'Node', order: str=None)-> None:
         """Prints tree in specified order to stdout.
 
         :param cur_node: Root node from Tree.get_root.
@@ -113,7 +90,7 @@ class Node(object):
         elif order == 'post-order':
             print(*self._post_order(cur_node, []))
 
-    def _pre_order(self, cur_node, output):
+    def _pre_order(self, cur_node: 'Node', output: list)-> list:
         """Prints tree: Root -> Left node -> Right node.
 
         :param cur_node: Root of tree.
@@ -126,7 +103,7 @@ class Node(object):
             self._pre_order(cur_node.right, output)
         return output
 
-    def _in_order(self, cur_node, output):
+    def _in_order(self, cur_node: 'Node', output: list)-> list:
         """Prints tree: Left node -> Root -> Right node.
 
         :param cur_node: Node.Root of tree.
@@ -139,7 +116,7 @@ class Node(object):
             self._in_order(cur_node.right, output)
         return output
 
-    def _post_order(self, cur_node, output):
+    def _post_order(self, cur_node: 'Node', output: list)-> list:
         """Prints tree: Left node -> Right node -> Root.
 
         :param cur_node: Root of tree.
@@ -152,7 +129,7 @@ class Node(object):
             output += [cur_node.data]
         return output
 
-    def height(self, cur_node, cur_height):
+    def height(self, cur_node: 'Node', cur_height: int)-> int:
         """Calculates and returns total height of tree.
 
         :param cur_node: Root of tree.
@@ -165,7 +142,7 @@ class Node(object):
         right_height = self.height(cur_node.right, cur_height + 1)
         return max(left_height, right_height)
 
-    def search(self, cur_node, data):
+    def search(self, cur_node: 'Node', data: Q)-> bool:
         """Searches tree for data, returns bool.
 
         :param cur_node: Root of tree.
@@ -180,14 +157,14 @@ class Node(object):
             return self.search(cur_node.right, data)
         return False
 
-    def insert(self, cur_node, data, adj_size):
+    def insert(self, cur_node: 'Node', data: Q, repeated_data: list)-> list:
         """Inserts data into tree. Alerts user if data already exists in tree.
 
         Calls _inspect_insertion to determine if insertion caused tree imbalance.
 
         :param cur_node: Root of tree.
         :param data: Data to be inserted.
-        :param adj_size: Empty list. Member added if data already in tree.
+        :param repeated_data: Empty list. Member added if data already in tree.
         """
         if data < cur_node.data:
             if not cur_node.left:
@@ -195,8 +172,8 @@ class Node(object):
                 cur_node.left.parent = cur_node
                 self._inspect_insertion(cur_node.left, [])
             else:
-                self.insert(cur_node.left, data, adj_size)
-            return adj_size
+                self.insert(cur_node.left, data, repeated_data)
+            return repeated_data
 
         elif data > cur_node.data:
             if not cur_node.right:
@@ -204,17 +181,17 @@ class Node(object):
                 cur_node.right.parent = cur_node
                 self._inspect_insertion(cur_node.right, [])
             else:
-                self.insert(cur_node.right, data, adj_size)
-            return adj_size
+                self.insert(cur_node.right, data, repeated_data)
+            return repeated_data
 
         # If many repeat values are expected and printing the occurrence is a nuisance,
         # toggle commenting on print statement.
         elif data == cur_node.data and cur_node.parent is not None:
-            adj_size += [1]
+            repeated_data += [1]
             # print(f'{data} already in tree. Cannot insert.')
-            return adj_size
+            return repeated_data
 
-    def _inspect_insertion(self, cur_node, nodes):
+    def _inspect_insertion(self, cur_node: 'Node', nodes: list)-> None:
         """ Determines if insertion creates need to balance sub-tree.
 
         Rebalance needed if difference in height of child nodes is > 1.
@@ -245,7 +222,7 @@ class Node(object):
 
         self._inspect_insertion(cur_node.parent, nodes)
 
-    def _get_height(self, cur_node):
+    def _get_height(self, cur_node: 'Node')-> int:
         """ Gets height of cur_node. Returns 0 if node is None else returns node.tallness.
 
         :param cur_node: Node
@@ -255,7 +232,7 @@ class Node(object):
             return 0
         return cur_node.tallness
 
-    def _rebalance_node(self, z, y, x):
+    def _rebalance_node(self, z: 'Node', y: 'Node', x: 'Node')-> None:
         """Determines orientation of imbalanced nodes and calls indicated balancing methods.
 
         Calls _rotate_right or _rotate_left as determined by orientation of unbalanced nodes.
@@ -301,7 +278,7 @@ class Node(object):
         else:
             raise Exception('Tree corrupted')
 
-    def _right_rotate(self, z):
+    def _right_rotate(self, z: 'Node')-> None:
         """Rotates around z to rebalance sub-tree.
 
         Makes z the right child of y.
@@ -332,7 +309,7 @@ class Node(object):
         z.tallness = 1 + max(self._get_height(z.left), self._get_height(z.right))
         y.tallness = 1 + max(self._get_height(y.left), self._get_height(y.right))
 
-    def _left_rotate(self, z):
+    def _left_rotate(self, z: 'Node')-> None:
         """Rotates around z to rebalance sub-tree.
 
         Makes z the left child of y.
@@ -362,7 +339,7 @@ class Node(object):
         z.tallness = 1 + max(self._get_height(z.left), self._get_height(z.right))
         y.tallness = 1 + max(self._get_height(y.left), self._get_height(y.right))
 
-    def delete(self, node):
+    def delete(self, node: 'Node')-> 'Node':
         """ Deletes node found in _find_node.
 
         Removes nodes and handles deleted node's orphaned children, if any.
@@ -373,19 +350,19 @@ class Node(object):
 
 
         :param node: Node to be deleted.
-        :return:
+        :return: New root Node, if necessary.
         """
-        def smallest_node(curr_node):
+        def smallest_node(curr_node: 'Node')-> 'Node':
             """ Finds smallest relative of curr_node.
 
-            :param curr_node: A node.
+            :param curr_node: A Node.
             :return: Relative of curr_node with smallest value.
             """
             while curr_node.left:
                 curr_node = curr_node.left
             return curr_node
 
-        def children(curr_node):
+        def children(curr_node: 'Node')-> int:
             """ Finds number of curr_node's children.
 
             :param curr_node: A node
@@ -408,8 +385,6 @@ class Node(object):
                     node_parent.left = None
                 else:
                     node_parent.right = None
-            else:
-                return None
 
         # Parent of deleted node made parent of deleted node's child.
         if node_children == 1:
@@ -433,14 +408,13 @@ class Node(object):
             successor = smallest_node(node.right)
             node.data = successor.data
             self.delete(successor)
-            return
 
         # Adjust height and inspect the tree for balance.
         if node_parent:
             node_parent.tallness = 1 + max(self._get_height(node_parent.left), self._get_height(node_parent.right))
             self._inspect_deletion(node_parent)
 
-    def _inspect_deletion(self, cur_node):
+    def _inspect_deletion(self, cur_node: 'Node')-> None:
         """Ensures tree is balanced after deletion.
 
         Calls _rebalance_node if imbalance is detected.
@@ -463,7 +437,7 @@ class Node(object):
         if cur_node.parent:
             self._inspect_insertion(cur_node, [])
 
-    def taller_child(self, cur_node):
+    def taller_child(self, cur_node: 'Node')-> 'Node':
         """Finds taller of node's children.
 
         :param cur_node: Node. Node to be inspected.
@@ -480,16 +454,52 @@ class AVLTree(object):
 
     """Wraps Node class. Methods call corresponding methods of Node class.
 
-    User accessible methods for insert, delete, search, height, print_tree, and clear_tree.
-
     """
 
-    def __init__(self):
-        """Tree is represented by its root node, initially None."""
+    def __init__(self)-> None:
+        """Tree is represented by its root node, initially None.
+
+        Tree designed for data types supporting <, =, >.
+
+        The following methods are implemented:
+            Create a new tree:
+                tree = AVLTree()
+
+            View tree structure (adjust for screen size):
+                print(tree)
+
+            Determine height of tree:
+                tree.height(print_result=True)
+
+                Returns int.
+
+                Print_result is optional, defaults to False
+
+            Insert data into tree:
+                tree.insert(data)
+
+                If data already exists in tree, user is alerted
+
+            Search for data in tree:
+                tree.search(data, print_results=True)
+
+                Returns Boolean.
+
+                Print_results is optional, defaults to False
+
+            Delete data from tree:
+                tree.delete(data)
+
+                If data does not exist in tree, user is alerted
+
+            Clear all data from tree:
+                tree.clear_tree()
+
+    """
         self.root = None
         self.size = 0
 
-    def __repr__(self):
+    def __repr__(self)-> str:
         """Prints text based structure of tree.
 
         :return: str. Tree structure.
@@ -532,10 +542,10 @@ class AVLTree(object):
             nodes = next_nodes
         return the_tree
 
-    def __len__(self):
+    def __len__(self)-> int:
         return self.size
 
-    def _get_root(self, data=None):
+    def _get_root(self, data: Q=None)-> 'Node':
         """Returns root node.
 
         Creates root node if called from Tree.insert and tree is empty.
@@ -546,9 +556,9 @@ class AVLTree(object):
         if not self.root:
             if data is not None:
                 self.root = Node(data)
+                return self.root
             else:
                 print('Tree is empty.')
-                return
 
         else:
             while self.root.parent:
@@ -556,7 +566,7 @@ class AVLTree(object):
 
         return self.root
 
-    def print_tree(self, order=None):
+    def print_tree(self, order: str=None)-> Any:
         """User interface for printing tree.
 
         Calls _print_tree with root from _get_root.
@@ -564,16 +574,15 @@ class AVLTree(object):
         Ensures print order requested is valid.
 
         :param order: 'in-order', 'pre-order', or 'post-order'
-        :return: _print_tree
+        :return: AVLTree._print_tree
         """
         print(order)
         if not order or not any([order == 'pre-order', order == 'post-order', order == 'in-order']):
             print('Please specify a valid print order.')
             print('(eg. order=\'in-order\', \'pre-order\', or \'post-order\')')
-            return
         return self._print_tree(self._get_root(), order)
 
-    def _print_tree(self, root, order=None):
+    def _print_tree(self, root: 'Node', order: str=None)-> Any:
         """Calls print_tree method of Node class.
 
         :param root: Root node
@@ -582,7 +591,7 @@ class AVLTree(object):
         """
         return root.print_tree(root, order)
 
-    def height(self, print_result=False):
+    def height(self, print_result: bool=False)-> int:
         """User interface for finding height of tree.
 
         Calls _height with root from _get_root.
@@ -596,7 +605,7 @@ class AVLTree(object):
             print(height)
         return height
 
-    def _height(self, root):
+    def _height(self, root: 'Node')-> Any:
         """Calls height method of Node class.
 
         :param root: Root node.
@@ -604,7 +613,7 @@ class AVLTree(object):
         """
         return root.height(root, 0)
 
-    def search(self, data, print_result=False):
+    def search(self, data: Q, print_result: bool=False)-> bool:
         """User interface for search method.
 
         Calls _search with root from _get_root.
@@ -612,7 +621,7 @@ class AVLTree(object):
 
         :param print_result: Set to True to print search results.
         :param data: Data to be found in tree.
-        :return: _search
+        :return: AVLTree._search
         """
         result = self._search(self._get_root(), data)
 
@@ -624,7 +633,7 @@ class AVLTree(object):
 
         return result
 
-    def _search(self, root, data):
+    def _search(self, root: 'Node', data: Q)-> Any:
         """Calls search method of Node class.
 
         :param root: Root node.
@@ -633,23 +642,21 @@ class AVLTree(object):
         """
         return root.search(root, data)
 
-    def insert(self, data):
+    def insert(self, data: Q)-> None:
         """User interface for inserting data into tree.
 
         Calls _insert with root provided by _get_root.
         Resets root after insert in case rotation changes root.
         Data field provided to _get_root ensures tree root is created on first insertion.
 
-        :param data: Data to be inserted into tree.
-        :return: _insert
+        :param data: int, float, str.
         """
         result = self._insert(self._get_root(data=data), data)
         if not result:
             self.size += 1
         self.root = self._get_root()
-        return self.root
 
-    def _insert(self, root, data):
+    def _insert(self, root: 'Node', data: Q)-> Any:
         """Calls insert method of Node class.
 
         :param root: Root node.
@@ -658,7 +665,7 @@ class AVLTree(object):
         """
         return root.insert(root, data, [])
 
-    def _find_node(self, cur_node, data):
+    def _find_node(self, cur_node: 'Node', data: Q)-> Any:
         """Finds and returns node with given data, else, returns None.
 
         :param cur_node: Root node from _get_root.
@@ -673,7 +680,7 @@ class AVLTree(object):
             return self._find_node(cur_node.right, data)
         return None
 
-    def delete(self, data):
+    def delete(self, data: Q)-> None:
         """Passes root and data to be deleted to _delete.
 
         Calls _delete with root from _get_root.
@@ -691,9 +698,7 @@ class AVLTree(object):
         self._delete(node)
         self.root = self._get_root()
 
-        return self.root
-
-    def _delete(self, node):
+    def _delete(self, node: 'Node')-> None:
         """Calls delete method of Node class.
 
         If root is to be deleted and has no children, root is set to None.
@@ -702,24 +707,18 @@ class AVLTree(object):
         :param node: Node to be deleted
         """
         if node == self.root and (not node.left and not node.right):
-            self.root = None
-            self.size = 0
-            return self.root
+            self.clear_tree()
 
         result = node.delete(node)
-
         if result:
             self.root = result
 
         self.root = self._get_root()
-            
-        return self.root
 
-    def clear_tree(self):
+    def clear_tree(self)-> None:
         """Clears tree of all data.
 
         :return: Tree root
         """
         self.root = None
         self.size = 0
-        return self.root
