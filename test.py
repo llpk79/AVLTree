@@ -325,6 +325,30 @@ tree.height(print_result=True)
 
 tree.clear_tree()
 
+# Test insertion of iterable.
+tree = AVLTree()
+a = list(range(50))
+tree.insert(a)
+print(is_avl_tree(tree.root))
+
+
+def gen(num):
+    for x in range(num):
+        yield x
+
+
+tree.clear_tree()
+tree.insert(gen(50))
+print(is_avl_tree(tree.root))
+
+
+def fun(num):
+    return list(range(num))
+
+
+tree.clear_tree()
+tree.insert(fun(50))
+print(is_avl_tree(tree.root))
 
 # Checking lookup speed.
 

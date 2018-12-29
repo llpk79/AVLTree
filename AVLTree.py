@@ -1,12 +1,13 @@
-from typing import TypeVar, Any
-Q = TypeVar('Q', str, int, float)
-
+from typing import TypeVar, Any, Iterable
 """AVLTree/Balanced Binary Search Tree Data structure.
 
 Thanks for checking out my implementation of a BBST. Feel free to use it and/or change it to better suit your needs.
 Any feedback is greatly appreciated.
 
 """
+
+Q = TypeVar('Q', int, float, str)  # Q for qualitative.
+Iq = Iterable[Q]  # Iterable/qualitative.
 
 
 class Node(object):
@@ -28,7 +29,7 @@ class Node(object):
         Tallness initialized at 1, adjusted with insert and delete to represent height of node. Null nodes have
         height of 0.
 
-        :param data: int, float,str
+        :param data: int, float, str.
         """
         self.data = data
         self.parent = None
@@ -91,7 +92,7 @@ class Node(object):
             print(*self._post_order(cur_node, []))
 
     def _pre_order(self, cur_node: 'Node', output: list)-> list:
-        """Prints tree: Root -> Left node -> Right node.
+        """Recursively traverses tree: Root -> Left node -> Right node.
 
         :param cur_node: Root of tree.
         :param output: Empty list.
@@ -104,7 +105,7 @@ class Node(object):
         return output
 
     def _in_order(self, cur_node: 'Node', output: list)-> list:
-        """Prints tree: Left node -> Root -> Right node.
+        """Recursively traverses tree: Left node -> Root -> Right node.
 
         :param cur_node: Node.Root of tree.
         :param output: Empty list.
@@ -117,7 +118,7 @@ class Node(object):
         return output
 
     def _post_order(self, cur_node: 'Node', output: list)-> list:
-        """Prints tree: Left node -> Right node -> Root.
+        """Recursively traverses tree: Left node -> Right node -> Root.
 
         :param cur_node: Root of tree.
         :param output: Empty list.
@@ -163,8 +164,8 @@ class Node(object):
         Calls _inspect_insertion to determine if insertion caused tree imbalance.
 
         :param cur_node: Root of tree.
-        :param data: Data to be inserted.
-        :param repeated_data: Empty list. Member added if data already in tree.
+        :param data: int, float, str.
+        :param repeated_data: Empty list. Added to if data is already in the tree.
         """
         if data < cur_node.data:
             if not cur_node.left:
@@ -352,6 +353,7 @@ class Node(object):
         :param node: Node to be deleted.
         :return: New root Node, if necessary.
         """
+
         def smallest_node(curr_node: 'Node')-> 'Node':
             """ Finds smallest relative of curr_node.
 
@@ -642,19 +644,26 @@ class AVLTree(object):
         """
         return root.search(root, data)
 
-    def insert(self, data: Q)-> None:
+    def insert(self, data: Q or Iq)-> None:
         """User interface for inserting data into tree.
 
         Calls _insert with root provided by _get_root.
         Resets root after insert in case rotation changes root.
         Data field provided to _get_root ensures tree root is created on first insertion.
 
-        :param data: int, float, str.
+        :param data: int, float, str or Iterable[int, float, str].
         """
-        result = self._insert(self._get_root(data=data), data)
-        if not result:
-            self.size += 1
-        self.root = self._get_root()
+        if isinstance(data, Iterable):
+            for x in data:
+                result = self._insert(self._get_root(data=x), x)
+                if not result:
+                    self.size += 1
+                self.root = self._get_root()
+        else:
+            result = self._insert(self._get_root(data=data), data)
+            if not result:
+                self.size += 1
+            self.root = self._get_root()
 
     def _insert(self, root: 'Node', data: Q)-> Any:
         """Calls insert method of Node class.
