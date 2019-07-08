@@ -4,7 +4,7 @@ from timeit import default_timer as timer
 from time import localtime as time
 
 
-def node_is_balanced(node: Node)-> bool:
+def node_is_balanced(node: Node) -> bool:
     """Checks balance of node by finding difference in height between children of node.
 
     Returns True if difference is > 1 else False
@@ -25,7 +25,7 @@ def node_is_balanced(node: Node)-> bool:
     return True
 
 
-def obeys_rules(node: Node)-> bool:
+def obeys_rules(node: Node) -> bool:
     """Checks that BST invariant is obeyed at this node.
 
     Data to the left must be < node.data.
@@ -44,7 +44,7 @@ def obeys_rules(node: Node)-> bool:
     return True
 
 
-def root_is_root(root: Node)-> bool:
+def root_is_root(root: Node) -> bool:
     """Checks if root node has a parent.
 
     Returns True if no parent found, else False
@@ -58,7 +58,7 @@ def root_is_root(root: Node)-> bool:
     return not root.parent
 
 
-def rules_and_balance(root: Node, bad_nodes: list)-> list:
+def rules_and_balance(root: Node, bad_nodes: list) -> list:
     """Recursively checks that tree is balanced and follows BST rules.
 
     If either are violated, adds affected nodes and type of violation to bad_nodes.
@@ -87,7 +87,7 @@ def rules_and_balance(root: Node, bad_nodes: list)-> list:
     return bad_nodes
 
 
-def is_avl_tree(root: Node)-> bool:
+def is_avl_tree(root: Node) -> bool:
     """Checks validity of root, tree balance, and BST invariant.
 
     If any violations are found, adds affected node and type of violation to log file with time-stamp.
@@ -104,10 +104,10 @@ def is_avl_tree(root: Node)-> bool:
         return True
     if rnb:
         with open('log.txt', 'a') as file:
-            file.write(f'{time()}, \n{rnb[1]}\nAffected nodes: {rnb[0]}')
+            file.write(f'{time().tm_year}-{time().tm_mon}-{time().tm_mday}, \n{rnb[1]}\nAffected nodes: {rnb[0]}')
     if not true_root:
         with open('log.txt', 'a') as file:
-            file.write(f'{time()}, \nAffected node: {root}')
+            file.write(f'{time().tm_year}-{time().tm_mon}-{time().tm_mday}, \nAffected node: {root}')
     return False
 
 
@@ -190,7 +190,7 @@ print(is_avl_tree(tree.root))
 print(tree.size)
 print(tree)
 
-# Delete root with one chile.
+# Delete root with one child.
 tree.delete(11)  # root.right
 tree.delete(8)  # root
 print(is_avl_tree(tree.root))
@@ -350,7 +350,18 @@ tree.clear_tree()
 tree.insert(fun(50))
 print(is_avl_tree(tree.root))
 
-# Checking lookup speed.
+
+# String test
+
+tree.clear_tree()
+for char in 'aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ':
+    tree.insert(char)
+print(tree)
+print(is_avl_tree(tree.root))
+tree.clear_tree()
+
+
+# Check lookup speed.
 
 DATA_SIZE = 100000
 
