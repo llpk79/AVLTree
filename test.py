@@ -1,4 +1,4 @@
-from AVLTree import AVLTree, Node
+from AVLTree.AVLTree import AVLTree, Node
 from random import randint
 from timeit import default_timer as timer
 from time import localtime as time

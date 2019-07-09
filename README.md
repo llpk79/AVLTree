@@ -6,7 +6,7 @@ Tree designed for data types supporting <, =, >.
 The following methods are implemented:
     
     Import module:
-       from AVLTree import AVLTree
+       from AVLTree.AVLTree import AVLTree
 
     Create a new tree:
         tree = AVLTree()
