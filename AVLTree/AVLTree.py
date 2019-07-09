@@ -733,3 +733,7 @@ class AVLTree(object):
         """
         self.root = None
         self.size = 0
+
+
+if __name__ == "__main__":
+    pass
